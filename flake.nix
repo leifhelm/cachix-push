@@ -7,13 +7,24 @@
     pog.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      flake-parts,
+      ...
+    }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
       perSystem = { pkgs, system, ... }: {
         _module.args.pkgs = import nixpkgs {
           inherit system;
-          overlays = [ inputs.pog.overlays.${system}.default ];
+          overlays = [ inputs.pog.overlays.default ];
         };
         packages.default = pkgs.callPackage ./default.nix { };
 
